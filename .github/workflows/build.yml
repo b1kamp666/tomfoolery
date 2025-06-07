@@ -1,3 +1,9 @@
+name: Build cSploit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
 
 jobs:
   build:
@@ -30,6 +36,7 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew assembleDebug
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
