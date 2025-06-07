@@ -1,33 +1,35 @@
-name: Build cSploit
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [ main, master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      - name: Set up JDK 17 for Android SDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Android SDK tools
+        uses: android-actions/setup-android@v3
+
+      # If your build needs Java 8, set it up and switch JAVA_HOME
+      - name: Set up JDK 8 for Gradle/build (if needed)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '8'
 
-      - name: Download Android SDK tools
-        uses: android-actions/setup-android@v3
+      - name: Set JAVA_HOME to Java 8 (if needed)
+        run: echo "JAVA_HOME=$JAVA_HOME_8_X64" >> $GITHUB_ENV
 
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew assembleDebug
-
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
